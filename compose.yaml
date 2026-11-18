@@ -8,6 +8,12 @@ services:
       UPSTREAM_TIMEOUT_MS: ${UPSTREAM_TIMEOUT_MS:-60000}
     volumes:
       - ./proxy.config.json:/app/proxy.config.json:ro
+      - type: bind
+        source: ${USERS_FILE:-./users.json}
+        target: /app/users.json
+        read_only: true
+        bind:
+          create_host_path: false
     read_only: true
     cap_drop:
       - ALL

@@ -9,8 +9,8 @@ for (const element of document.querySelectorAll('[data-base]')) {
 const examples = {
   gemini: {
     filename: 'gemini.sh',
-    note: 'Задайте GEMINI_API_KEY и GEMINI_MODEL в окружении. Идентификатор модели возьмите из каталога Gemini.',
-    code: `curl "${base}/gemini/v1beta/models/$GEMINI_MODEL:generateContent" \\
+    note: 'Задайте NYENSCHANTZ_TOKEN, GEMINI_API_KEY и GEMINI_MODEL в окружении. Токен прокси выдаёт владелец сервера; модель выбирайте из каталога Gemini.',
+    code: `curl "${base}/$NYENSCHANTZ_TOKEN/gemini/v1beta/models/$GEMINI_MODEL:generateContent" \\
   -H "x-goog-api-key: $GEMINI_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -23,20 +23,22 @@ const examples = {
   },
   openrouter: {
     filename: 'openrouter.sh',
-    note: 'Задайте OPENROUTER_API_KEY и OPENROUTER_MODEL в окружении. Например, OPENROUTER_MODEL=провайдер/модель из каталога OpenRouter.',
-    code: `curl "${base}/openrouter/chat/completions" \\
+    note: 'Задайте NYENSCHANTZ_TOKEN, OPENROUTER_API_KEY и OPENROUTER_MODEL в окружении. Токен прокси и API-ключ провайдера — разные секреты.',
+    code: `curl "${base}/$NYENSCHANTZ_TOKEN/openrouter/chat/completions" \\
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d "{\n    \\"model\\": \\"$OPENROUTER_MODEL\\",\n    \\"messages\\": [{\n      \\"role\\": \\"user\\",\n      \\"content\\": \\"Explain SSE in two sentences\\"\n    }]\n  }"`
   },
   python: {
     filename: 'example.py',
-    note: 'Установите SDK: pip install openai. Задайте OPENROUTER_API_KEY и OPENROUTER_MODEL в переменных окружения.',
+    note: 'Установите SDK: pip install openai. Задайте NYENSCHANTZ_TOKEN, OPENROUTER_API_KEY и OPENROUTER_MODEL в переменных окружения.',
     code: `import os
 from openai import OpenAI
 
+proxy_token = os.environ["NYENSCHANTZ_TOKEN"]
+
 client = OpenAI(
-    base_url="${base}/openrouter",
+    base_url=f"${base}/{proxy_token}/openrouter",
     api_key=os.environ["OPENROUTER_API_KEY"],
 )
 
@@ -52,8 +54,8 @@ print(response.choices[0].message.content)`
   },
   stream: {
     filename: 'stream.sh',
-    note: 'Флаг -N отключает буферизацию cURL. Ответ приходит в формате SSE; параметр stream включает потоковую выдачу у провайдера.',
-    code: `curl -N "${base}/openrouter/chat/completions" \\
+    note: 'Задайте NYENSCHANTZ_TOKEN, OPENROUTER_API_KEY и OPENROUTER_MODEL. Флаг -N отключает буферизацию cURL; stream включает потоковый ответ провайдера.',
+    code: `curl -N "${base}/$NYENSCHANTZ_TOKEN/openrouter/chat/completions" \\
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d "{\n    \\"model\\": \\"$OPENROUTER_MODEL\\",\n    \\"stream\\": true,\n    \\"messages\\": [{\n      \\"role\\": \\"user\\",\n      \\"content\\": \\"Write a short story about a lighthouse\\"\n    }]\n  }"`
@@ -87,7 +89,7 @@ for (const choice of choices) {
 document.querySelector('#copy-code').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(code.textContent);
-    status.textContent = 'Пример скопирован. Не забудьте задать API-ключ и модель.';
+    status.textContent = 'Пример скопирован. Задайте токен прокси, API-ключ провайдера и модель.';
   } catch {
     const selection = window.getSelection();
     const range = document.createRange();

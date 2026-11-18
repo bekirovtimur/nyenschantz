@@ -2,8 +2,10 @@ import http from 'node:http';
 import { loadRoutes, resolveRoute } from './lib/route-table.js';
 import { forward } from './lib/forwarding.js';
 import { sendError } from './lib/errors.js';
+import { loadUsers, authenticatePath } from './lib/access.js';
 
 const routes = loadRoutes();
+const users = loadUsers();
 const domain = process.env.DOMAIN;
 if (!domain || !/^[a-zA-Z0-9.-]+$/.test(domain)) throw new Error('DOMAIN must be a hostname');
 const timeoutMs = Number(process.env.UPSTREAM_TIMEOUT_MS || 60000);
@@ -30,7 +32,8 @@ const server = http.createServer((request, response) => {
       sendError(response, 400, 'bad_request', 'Invalid request path');
       return;
     }
-    route = resolveRoute(request.url, routes);
+    const authenticatedPath = authenticatePath(request.url, users);
+    route = authenticatedPath === null ? null : resolveRoute(authenticatedPath, routes);
     if (!route) {
       request.resume();
       sendError(response, 404, 'route_not_found', 'Route not found');

@@ -44,7 +44,7 @@
         <div><p class="eyebrow">МЕНЬШЕ НАСТРОЕК. БОЛЬШЕ ВОЗМОЖНОСТЕЙ.</p><h2 id="flow-title">Меняете адрес.<br>Не меняете привычки.</h2></div>
         <div class="flow-content">
           <div class="flow" aria-label="Ваше приложение, затем Nyenschantz, затем API провайдера"><span>Ваше приложение</span><span class="flow-arrow" aria-hidden="true">→</span><strong>Nyenschantz</strong><span class="flow-arrow" aria-hidden="true">→</span><span>AI API</span></div>
-          <p>Укажите адрес прокси вместо адреса провайдера. Формат запросов, авторизация и ответы остаются прежними. Данные передаются потоком, включая SSE.</p>
+          <p>Укажите адрес прокси с вашим токеном вместо адреса провайдера. Формат запросов, авторизация провайдера и ответы остаются прежними. Данные передаются потоком, включая SSE.</p>
         </div>
       </div>
     </section>
@@ -55,13 +55,13 @@
         <article class="platform-card">
           <div class="card-top"><span class="platform-symbol gemini" aria-hidden="true">✦</span><span class="tag">GOOGLE</span></div>
           <h3>Gemini</h3><p>Генерация текста, работа с изображениями и другие возможности Gemini API.</p>
-          <div class="endpoint"><span>BASE URL</span><code data-base="/gemini">https://proxy.example.com/gemini</code></div>
+          <div class="endpoint"><span>BASE URL</span><code data-base="/YOUR_PROXY_TOKEN/gemini">https://proxy.example.com/YOUR_PROXY_TOKEN/gemini</code></div>
           <a class="card-link" href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener noreferrer">Документация Gemini <span aria-hidden="true">↗</span></a>
         </article>
         <article class="platform-card">
           <div class="card-top"><span class="platform-symbol openrouter" aria-hidden="true">⑂</span><span class="tag">MULTI-MODEL</span></div>
           <h3>OpenRouter</h3><p>Каталог моделей разных провайдеров через API, совместимый с OpenAI SDK.</p>
-          <div class="endpoint"><span>BASE URL</span><code data-base="/openrouter">https://proxy.example.com/openrouter</code></div>
+          <div class="endpoint"><span>BASE URL</span><code data-base="/YOUR_PROXY_TOKEN/openrouter">https://proxy.example.com/YOUR_PROXY_TOKEN/openrouter</code></div>
           <a class="card-link" href="https://openrouter.ai/docs/quickstart" target="_blank" rel="noopener noreferrer">Документация OpenRouter <span aria-hidden="true">↗</span></a>
         </article>
         <article class="platform-card future-card">
@@ -74,7 +74,12 @@
     </section>
 
     <section class="section examples-section wrap" id="examples" aria-labelledby="examples-title">
-      <div class="section-heading"><div><p class="eyebrow">02 / БЫСТРЫЙ СТАРТ</p><h2 id="examples-title">От идеи до<br>первого запроса.</h2></div><p class="section-aside">Скопируйте пример, подставьте свой ключ<br>и выберите доступную вам модель.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">02 / БЫСТРЫЙ СТАРТ</p><h2 id="examples-title">От идеи до<br>первого запроса.</h2></div><p class="section-aside">Ваш токен прокси, API-ключ провайдера<br>и доступная вам модель.</p></div>
+      <div class="access-notice">
+        <h3>Два секрета — две задачи.</h3>
+        <p>Для API нужен токен Nyenschantz от владельца сервера и отдельный API-ключ платформы. Адрес подключения: <code>https://домен/YOUR_PROXY_TOKEN/платформа/...</code>. В cURL-примерах токен задаётся переменной <code>NYENSCHANTZ_TOKEN</code>.</p>
+        <p>URL содержит секрет: не публикуйте его и не передавайте посторонним. Он может попасть в историю и логи клиента. Демонстрационные пользователи в <code>users.json</code> репозитория отключены; их токены не дают доступа. Страница не принимает и не сохраняет настоящие токены.</p>
+      </div>
       <div class="examples-layout">
         <div class="example-menu" role="group" aria-label="Выберите пример">
           <button class="example-choice active" type="button" data-example="gemini" aria-pressed="true"><span class="example-number">01</span><span><strong>Gemini</strong><small>Генерация текста · cURL</small></span><span class="choice-arrow" aria-hidden="true">↗</span></button>
@@ -84,11 +89,11 @@
         </div>
         <div class="code-panel">
           <div class="code-toolbar"><span><span class="terminal-dot" aria-hidden="true"></span><span id="example-filename">gemini.sh</span></span><button id="copy-code" type="button">Копировать <span aria-hidden="true">⧉</span></button></div>
-          <pre tabindex="0" aria-label="Код примера"><code id="example-code">curl "https://proxy.example.com/gemini/v1beta/models/$GEMINI_MODEL:generateContent" \
+          <pre tabindex="0" aria-label="Код примера"><code id="example-code">curl "https://proxy.example.com/$NYENSCHANTZ_TOKEN/gemini/v1beta/models/$GEMINI_MODEL:generateContent" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"contents":[{"parts":[{"text":"Объясни SSE в двух предложениях"}]}]}'</code></pre>
-          <p class="code-note" id="example-note">Задайте GEMINI_API_KEY и GEMINI_MODEL в окружении. Идентификатор модели возьмите из каталога Gemini.</p>
+          <p class="code-note" id="example-note">Задайте NYENSCHANTZ_TOKEN, GEMINI_API_KEY и GEMINI_MODEL в окружении. Токен прокси выдаёт владелец сервера; модель выбирайте из каталога Gemini.</p>
         </div>
       </div>
       <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>

@@ -1,0 +1,12 @@
+{
+  "users": {
+    "example-user": {
+      "token": "ExampleUser1",
+      "disabled": true
+    },
+    "example-bot": {
+      "token": "ExampleBot01",
+      "disabled": true
+    }
+  }
+}

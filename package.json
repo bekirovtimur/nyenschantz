@@ -4,6 +4,9 @@
   "private": true,
   "description": "Streaming reverse proxy with Docker Compose and Caddy",
   "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
   "engines": {
     "node": ">=24"
   }
