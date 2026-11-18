@@ -8,9 +8,9 @@
       "target": "https://api.telegram.org",
       "description": "Telegram Bot API"
     },
-    "tg": {
-      "target": "https://api.telegram.org",
-      "description": "Telegram Bot API"
+    "gemini": {
+      "target": "https://generativelanguage.googleapis.com",
+      "description": "Google Gemini API"
     },
     "openrouter": {
       "target": "https://openrouter.ai/api/v1",
