@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1014">
+  <meta name="description" content="Nyenschantz — потоковый прокси для API Gemini, OpenRouter и других платформ. Ваши ключи, привычные SDK, одна точка входа.">
+  <title>Nyenschantz — ваш шлюз к AI API</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">К содержимому</a>
+  <header class="header wrap">
+    <a class="wordmark" href="/" aria-label="Nyenschantz — главная"><span class="brand-icon" aria-hidden="true">N<span>↗</span></span>NYENSCHANTZ<span class="wordmark-dot">.</span></a>
+    <nav aria-label="Основная навигация">
+      <a href="#platforms">Платформы</a>
+      <a href="#examples">Примеры <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="signal" aria-hidden="true"></span> YOUR GATEWAY TO THE OUTSIDE</p>
+        <h1 id="hero-title">Один шлюз.<br>Множество<br><span>возможностей ИИ.</span></h1>
+        <p class="hero-description">Gemini, OpenRouter и другие API — через единую точку входа. Ваши ключи, привычные SDK и ответы без лишних остановок.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#examples">Подключиться <span aria-hidden="true">↗</span></a>
+          <a class="text-link" href="#how-it-works">Как это работает <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="hero-facts"><span>Потоковые ответы</span><span>Без смены SDK</span><span>Ваш API-ключ</span></div>
+      </div>
+      <div class="hero-art">
+        <div class="art-label"><span class="cross" aria-hidden="true">+</span> EST. CONNECTION / HTTPS</div>
+        <img src="/assets/logo.png" alt="Крепость Nyenschantz: цифровые потоки проходят через ворота к внешнему миру" width="1536" height="1024" fetchpriority="high">
+        <div class="art-caption"><span>01 / ЕДИНАЯ ТОЧКА ВХОДА</span><span aria-hidden="true">↗</span></div>
+      </div>
+    </section>
+
+    <section class="flow-section" id="how-it-works" aria-labelledby="flow-title">
+      <div class="wrap flow-layout">
+        <div><p class="eyebrow">МЕНЬШЕ НАСТРОЕК. БОЛЬШЕ ВОЗМОЖНОСТЕЙ.</p><h2 id="flow-title">Меняете адрес.<br>Не меняете привычки.</h2></div>
+        <div class="flow-content">
+          <div class="flow" aria-label="Ваше приложение, затем Nyenschantz, затем API провайдера"><span>Ваше приложение</span><span class="flow-arrow" aria-hidden="true">→</span><strong>Nyenschantz</strong><span class="flow-arrow" aria-hidden="true">→</span><span>AI API</span></div>
+          <p>Укажите адрес прокси вместо адреса провайдера. Формат запросов, авторизация и ответы остаются прежними. Данные передаются потоком, включая SSE.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap" id="platforms" aria-labelledby="platforms-title">
+      <div class="section-heading"><div><p class="eyebrow">01 / ПЛАТФОРМЫ</p><h2 id="platforms-title">Разные модели.<br>Знакомый интерфейс.</h2></div><p class="section-aside">Нативные API, без преобразования<br>в общий формат.</p></div>
+      <div class="platform-grid">
+        <article class="platform-card">
+          <div class="card-top"><span class="platform-symbol gemini" aria-hidden="true">✦</span><span class="tag">GOOGLE</span></div>
+          <h3>Gemini</h3><p>Генерация текста, работа с изображениями и другие возможности Gemini API.</p>
+          <div class="endpoint"><span>BASE URL</span><code data-base="/gemini">https://proxy.example.com/gemini</code></div>
+          <a class="card-link" href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener noreferrer">Документация Gemini <span aria-hidden="true">↗</span></a>
+        </article>
+        <article class="platform-card">
+          <div class="card-top"><span class="platform-symbol openrouter" aria-hidden="true">⑂</span><span class="tag">MULTI-MODEL</span></div>
+          <h3>OpenRouter</h3><p>Каталог моделей разных провайдеров через API, совместимый с OpenAI SDK.</p>
+          <div class="endpoint"><span>BASE URL</span><code data-base="/openrouter">https://proxy.example.com/openrouter</code></div>
+          <a class="card-link" href="https://openrouter.ai/docs/quickstart" target="_blank" rel="noopener noreferrer">Документация OpenRouter <span aria-hidden="true">↗</span></a>
+        </article>
+        <article class="platform-card future-card">
+          <div class="card-top"><span class="platform-symbol" aria-hidden="true">＋</span><span class="tag">РАСШИРЯЕМО</span></div>
+          <h3>И другие API</h3><p>Архитектура не ограничена ИИ. В текущей конфигурации также есть Telegram Bot API и Cloudflare API.</p>
+          <div class="config-note"><span aria-hidden="true">{ }</span><p>Новые upstream-сервисы добавляет владелец в <code>proxy.config.json</code>.</p></div>
+          <span class="card-footnote">Только настроенные маршруты</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="section examples-section wrap" id="examples" aria-labelledby="examples-title">
+      <div class="section-heading"><div><p class="eyebrow">02 / БЫСТРЫЙ СТАРТ</p><h2 id="examples-title">От идеи до<br>первого запроса.</h2></div><p class="section-aside">Скопируйте пример, подставьте свой ключ<br>и выберите доступную вам модель.</p></div>
+      <div class="examples-layout">
+        <div class="example-menu" role="group" aria-label="Выберите пример">
+          <button class="example-choice active" type="button" data-example="gemini" aria-pressed="true"><span class="example-number">01</span><span><strong>Gemini</strong><small>Генерация текста · cURL</small></span><span class="choice-arrow" aria-hidden="true">↗</span></button>
+          <button class="example-choice" type="button" data-example="openrouter" aria-pressed="false"><span class="example-number">02</span><span><strong>OpenRouter</strong><small>Chat Completions · cURL</small></span><span class="choice-arrow" aria-hidden="true">↗</span></button>
+          <button class="example-choice" type="button" data-example="python" aria-pressed="false"><span class="example-number">03</span><span><strong>Привычный SDK</strong><small>OpenAI SDK · Python</small></span><span class="choice-arrow" aria-hidden="true">↗</span></button>
+          <button class="example-choice" type="button" data-example="stream" aria-pressed="false"><span class="example-number">04</span><span><strong>Ответ в реальном времени</strong><small>Streaming / SSE · cURL</small></span><span class="choice-arrow" aria-hidden="true">↗</span></button>
+        </div>
+        <div class="code-panel">
+          <div class="code-toolbar"><span><span class="terminal-dot" aria-hidden="true"></span><span id="example-filename">gemini.sh</span></span><button id="copy-code" type="button">Копировать <span aria-hidden="true">⧉</span></button></div>
+          <pre tabindex="0" aria-label="Код примера"><code id="example-code">curl "https://proxy.example.com/gemini/v1beta/models/$GEMINI_MODEL:generateContent" \
+  -H "x-goog-api-key: $GEMINI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"contents":[{"parts":[{"text":"Объясни SSE в двух предложениях"}]}]}'</code></pre>
+          <p class="code-note" id="example-note">Задайте GEMINI_API_KEY и GEMINI_MODEL в окружении. Идентификатор модели возьмите из каталога Gemini.</p>
+        </div>
+      </div>
+      <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+      <noscript><p class="notice">Для переключения и копирования примеров включите JavaScript. В примере выше замените https://proxy.example.com на адрес этого сайта.</p></noscript>
+    </section>
+
+    <section class="section wrap notes-section" aria-labelledby="notes-title">
+      <div><p class="eyebrow">03 / ВАЖНО ЗНАТЬ</p><h2 id="notes-title">Прокси, а не<br>новый провайдер.</h2></div>
+      <div class="notes-grid">
+        <article><span class="note-icon" aria-hidden="true">↳</span><h3>Ваш ключ. Ваши квоты.</h3><p>Нужен собственный API-ключ провайдера. Его тарифы, лимиты и доступность моделей продолжают действовать.</p></article>
+        <article><span class="note-icon" aria-hidden="true">⌁</span><h3>Поток — без буферизации.</h3><p>Ответ передаётся по мере поступления. Простой upstream дольше настроенного таймаута прерывает соединение.</p></article>
+        <article><span class="note-icon" aria-hidden="true">◇</span><h3>Ключи — на сервере.</h3><p>Не публикуйте секреты во frontend-коде. Страница не запрашивает ключи и не отправляет тестовые API-запросы.</p></article>
+        <article><span class="note-icon" aria-hidden="true">↗</span><h3>Доверие имеет значение.</h3><p>Оператор прокси технически имеет доступ к передаваемым данным. Используйте только доверенный сервер. WebSocket не поддерживается.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer wrap"><div><a class="footer-brand" href="/">NYENSCHANTZ<span>.</span></a><p>Your gateway to the outside.</p></div><span>Независимый проект.<br>Не связан с Google или OpenRouter.</span><a class="text-link" href="https://github.com/bekirovtimur/nyenschantz" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a class="text-link" href="#main">Наверх ↑</a></footer>
+</body>
+</html>

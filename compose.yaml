@@ -26,6 +26,35 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  landing:
+    image: nginx:alpine
+    restart: unless-stopped
+    user: "101:101"
+    entrypoint: ["nginx"]
+    command: ["-g", "daemon off;"]
+    volumes:
+      - ./landing/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./landing/public:/usr/share/nginx/html:ro
+      - ./logo.png:/usr/share/nginx/logo.png:ro
+    read_only: true
+    tmpfs:
+      - /tmp:uid=101,gid=101,mode=1770
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 5s
+      start_period: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
@@ -40,6 +69,8 @@ services:
       - caddy_config:/config
     depends_on:
       proxy:
+        condition: service_healthy
+      landing:
         condition: service_healthy
     logging:
       driver: json-file

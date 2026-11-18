@@ -1,8 +1,15 @@
 {$DOMAIN} {
-	reverse_proxy proxy:3000 {
-		flush_interval -1
-		transport http {
-			keepalive 30s
+	@landing path / /assets/*
+	handle @landing {
+		reverse_proxy landing:8080
+	}
+
+	handle {
+		reverse_proxy proxy:3000 {
+			flush_interval -1
+			transport http {
+				keepalive 30s
+			}
 		}
 	}
 

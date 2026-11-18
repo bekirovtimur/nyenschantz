@@ -2,12 +2,15 @@
 
 <img src="logo.png" alt="Nyenschantz Logo" width="300">
 
-Публичный потоковый reverse proxy с маршрутизацией по первому сегменту пути.
+Публичный потоковый reverse proxy для API ИИ-платформ и других сервисов,
+с маршрутизацией по первому сегменту пути и лендингом на главной странице.
 Запускается через Docker Compose: Caddy получает и продлевает HTTPS-сертификаты,
-Node.js пересылает запросы настроенным upstream-серверам. Авторизации нет.
+Node.js пересылает запросы настроенным upstream-серверам, Nginx отдаёт лендинг.
+Авторизации нет.
 
 ```text
-Интернет → Caddy :80/:443 → proxy :3000 → upstream
+Интернет → Caddy :80/:443 ┬→ landing :8080 (только / и /assets/*)
+                        └→ proxy :3000 → upstream
 ```
 
 ## Запуск на сервере
@@ -33,6 +36,11 @@ Caddy автоматически выпустит сертификат. HTTP п�
 `caddy_data`; **не используйте `docker compose down -v`**, если хотите их сохранить.
 
 ## Маршруты
+
+Путь `/` открывает страницу Nyenschantz с описанием и примерами Gemini,
+OpenRouter, OpenAI SDK для Python и потоковых ответов. `/assets/*` зарезервирован
+для статики лендинга: не используйте `assets` как ключ API-маршрута.
+Все остальные пути, в том числе неизвестные, обрабатывает Node.js-прокси.
 
 В `proxy.config.json` каждому первому сегменту пути соответствует upstream:
 
@@ -80,13 +88,14 @@ Access log Caddy выключен; его служебные/диагности�
 
 ## JSON-ошибки
 
-Для `/` и неизвестного маршрута возвращается HTTP 404:
+Для неизвестного API-маршрута возвращается HTTP 404:
 
 ```json
 {"error":{"code":"route_not_found","message":"Route not found"}}
 ```
 
-Все собственные ошибки имеют `Content-Type: application/json` и `Cache-Control: no-store`:
+Собственные ошибки API-прокси имеют `Content-Type: application/json` и
+`Cache-Control: no-store` (ошибки статических файлов лендинга обрабатывает Nginx):
 
 | Статус | Код | Причина |
 | --- | --- | --- |
@@ -113,11 +122,16 @@ HTTP HEAD по стандарту возвращает только заголо
 ```sh
 curl -I http://proxy.example.com/
 curl -i https://proxy.example.com/
+curl -I https://proxy.example.com/assets/style.css
 curl -i https://proxy.example.com/unknown/path
 curl -i https://proxy.example.com/cloudflare/
 ```
 
 Проверьте POST с телом и SSE (`curl -N`) на подходящем настроенном upstream.
+Главная страница должна возвращать HTML с HTTP 200, CSS — HTTP 200,
+неизвестный API-маршрут — JSON с HTTP 404. Проверьте переключение примеров
+и копирование: в код подставляется текущий домен страницы.
+
 Для проверки 502 временно добавьте target `http://127.0.0.2:65534` и перезапустите
 приложение. Для 504 используйте контролируемый upstream, который задерживает
 заголовки дольше `UPSTREAM_TIMEOUT_MS`. Удалите временные маршруты после проверки.
@@ -136,11 +150,29 @@ docker compose start proxy
 git pull
 docker compose build --pull
 docker compose pull caddy
+docker compose pull landing
 docker compose up -d
 ```
 
 Остановка: `docker compose down` (сертификаты сохраняются).
 При завершении приложение даёт активным запросам до 10 секунд.
+
+## Лендинг
+
+Страница находится в `landing/public/`, конфигурация Nginx — в
+`landing/nginx.conf`. Лендинг работает отдельным контейнером без root,
+с read-only файловой системой, без опубликованного на хост порта.
+Изображение `/assets/logo.png` берётся из существующего `logo.png` в корне проекта.
+Ни шрифты, ни скрипты, ни изображения со сторонних сайтов не загружаются.
+
+HTML/CSS/JS подключены read-only с хоста: после правок пересборка не нужна.
+HTML не кешируется, статика кешируется до часа. При изменении конфигурации Nginx
+выполните `docker compose restart landing`. После изменения `Caddyfile` —
+`docker compose restart caddy`.
+
+Примеры автоматически используют текущий origin страницы и переменные окружения
+для API-ключей и идентификаторов моделей. Модели выбирайте из актуального
+каталога провайдера. Страница не принимает ключи и не выполняет API-запросы.
 
 ## Безопасность
 
