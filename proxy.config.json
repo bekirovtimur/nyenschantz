@@ -1,0 +1,20 @@
+{
+  "routes": {
+    "cloudflare": {
+      "target": "https://api.cloudflareclient.com/v0i1909051800",
+      "description": "Cloudflare API"
+    },
+    "telegram": {
+      "target": "https://api.telegram.org",
+      "description": "Telegram Bot API"
+    },
+    "tg": {
+      "target": "https://api.telegram.org",
+      "description": "Telegram Bot API"
+    },
+    "openrouter": {
+      "target": "https://openrouter.ai/api/v1",
+      "description": "OpenRouter AI API"
+    }
+  }
+}

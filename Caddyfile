@@ -1,0 +1,14 @@
+{$DOMAIN} {
+	reverse_proxy proxy:3000 {
+		flush_interval -1
+		transport http {
+			keepalive 30s
+		}
+	}
+
+	handle_errors {
+		header Content-Type "application/json; charset=utf-8"
+		header Cache-Control "no-store"
+		respond `{"error":{"code":"gateway_error","message":"Gateway request failed","status":{err.status_code}}}` {err.status_code}
+	}
+}
