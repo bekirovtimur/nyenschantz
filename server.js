@@ -1,10 +1,18 @@
 import http from 'node:http';
-import { loadRoutes, resolveRoute } from './lib/route-table.js';
+import { loadRouteConfig, loadRoutes, resolveRoute } from './lib/route-table.js';
 import { forward } from './lib/forwarding.js';
 import { sendError } from './lib/errors.js';
 import { loadUsers, authenticatePath } from './lib/access.js';
 
-const routes = loadRoutes();
+const config = loadRouteConfig();
+const routes = loadRoutes(config);
+// Publish only route metadata from the same snapshot used for forwarding.
+const routesBody = JSON.stringify({ routes: Object.fromEntries(
+  [...routes.keys()].map((key) => {
+    const { target, description } = config.routes[key];
+    return [key, { target, ...(typeof description === 'string' ? { description } : {}) }];
+  })
+) }, null, 2);
 const users = loadUsers();
 const domain = process.env.DOMAIN;
 if (!domain || !/^[a-zA-Z0-9.-]+$/.test(domain)) throw new Error('DOMAIN must be a hostname');
@@ -33,6 +41,21 @@ const server = http.createServer((request, response) => {
       return;
     }
     const authenticatedPath = authenticatePath(request.url, users);
+    if (authenticatedPath !== null && authenticatedPath.split('?')[0] === '/routes') {
+      request.resume();
+      if (request.method !== 'GET' && request.method !== 'HEAD') {
+        response.setHeader('Allow', 'GET, HEAD');
+        sendError(response, 405, 'method_not_allowed', 'Method not allowed');
+        return;
+      }
+      response.writeHead(200, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'Content-Length': Buffer.byteLength(routesBody)
+      });
+      response.end(request.method === 'HEAD' ? undefined : routesBody);
+      return;
+    }
     route = authenticatedPath === null ? null : resolveRoute(authenticatedPath, routes);
     if (!route) {
       request.resume();

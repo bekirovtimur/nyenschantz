@@ -57,9 +57,12 @@ test('authenticated proxy preserves API behavior without exposing the prefix', {
     upstream.close();
   });
   const target = `http://127.0.0.2:${upstream.address().port}/base?fixed=1`;
-  writeFileSync(join(directory, 'proxy.config.json'), JSON.stringify({ routes: Object.fromEntries(
-    ['gemini', 'openrouter', 'telegram', 'cloudflare'].map((key) => [key, { target }])
-  ) }));
+  const routeConfig = { routes: Object.fromEntries(
+    ['gemini', 'openrouter', 'telegram', 'cloudflare'].map((key) => [key, { target, description: `${key} API` }])
+  ) };
+  writeFileSync(join(directory, 'proxy.config.json'), JSON.stringify({
+    ...routeConfig, privateMetadata: 'not-for-clients'
+  }));
   writeFileSync(join(directory, 'users.json'), JSON.stringify({ users: {
     active: { token, disabled: false },
     disabled: { token: disabledToken, disabled: true }
@@ -97,6 +100,41 @@ test('authenticated proxy preserves API behavior without exposing the prefix', {
       assert.match(result.headers['content-type'], /^application\/json/);
     }
     assert.equal(upstreamCalls, 0);
+  });
+
+  await t.test('route discovery requires an active token and never contacts upstream', async () => {
+    const expected = JSON.stringify({ error: { code: 'route_not_found', message: 'Route not found' } });
+    for (const path of ['/routes', '/WrongToken01/routes',
+      `/${disabledToken}/routes`, '/%4CiveToken_01/routes']) {
+      const result = await request(path);
+      assert.equal(result.status, 404);
+      assert.equal(result.body, expected);
+    }
+    const result = await request(`/${token}/routes?download=1`);
+    assert.equal(result.status, 200);
+    assert.match(result.headers['content-type'], /^application\/json/);
+    assert.equal(result.headers['cache-control'], 'no-store');
+    assert.equal(Number(result.headers['content-length']), Buffer.byteLength(result.body));
+    assert.deepEqual(JSON.parse(result.body), routeConfig);
+    assert.ok(!result.body.includes(token));
+
+    const head = await request(`/${token}/routes`, { method: 'HEAD' });
+    assert.equal(head.status, 200);
+    assert.equal(head.body, '');
+    assert.equal(head.headers['content-length'], result.headers['content-length']);
+
+    const post = await request(`/${token}/routes`, { method: 'POST', body: 'ignored' });
+    assert.equal(post.status, 405);
+    assert.equal(post.headers.allow, 'GET, HEAD');
+    assert.equal(JSON.parse(post.body).error.code, 'method_not_allowed');
+    assert.equal(upstreamCalls, 0);
+  });
+
+  await t.test('route discovery reports the running snapshot, not unapplied file changes', async () => {
+    writeFileSync(join(directory, 'proxy.config.json'), '{"routes":{}}');
+    const result = await request(`/${token}/routes`);
+    assert.equal(result.status, 200);
+    assert.deepEqual(JSON.parse(result.body), routeConfig);
   });
 
   await t.test('all four routes require and strip the token', async () => {
